@@ -1,8 +1,12 @@
 // Package router implements an HTTP request router.
 //
-// It serves as a wrapper for the package "github.com/julienschmidt/httprouter", extending its capabilities.
-// Additional features include: generating URLs for named routes, route prefixes and groups, middleware functions,
-// validation of named parameters using regular expressions.
+// It serves as a wrapper for the package [github.com/julienschmidt/httprouter], extending its capabilities.
+//
+// Additional features include:
+//   - generating URLs for named routes
+//   - route prefixes and groups
+//   - middleware functions
+//   - validation of named parameters using regular expressions
 package router
 
 import (
