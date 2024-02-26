@@ -327,7 +327,10 @@ func TestRouter_Prefix(t *testing.T) {
 		})
 
 		r.Prefix("/{userId}", func(r *Router) {
-			r.Where("userId", regexp.MustCompile(`^\d+$`))
+			r.WhereFunc("userId", func(value string) bool {
+				_, err := strconv.Atoi(value)
+				return err == nil
+			})
 
 			r.Get("").
 				HandleFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -391,7 +394,10 @@ func TestRouter_Url(t *testing.T) {
 	r := New()
 
 	r.Prefix("/users/{userId}", func(r *Router) {
-		r.Where("userId", regexp.MustCompile(`^\d+$`))
+		r.WhereFunc("userId", func(value string) bool {
+			_, err := strconv.Atoi(value)
+			return err == nil
+		})
 
 		r.Get("/articles/{articleId}").
 			Where("articleId", regexp.MustCompile(`^\d+$`)).

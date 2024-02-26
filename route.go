@@ -29,13 +29,26 @@ func (route *Route) Name(name string) *Route {
 }
 
 // Where sets a regular expression for validating a named parameter.
-func (route *Route) Where(param string, regexp *regexp.Regexp) *Route {
+func (route *Route) Where(param string, regex *regexp.Regexp) *Route {
 	i := route.paramNames.IndexOf(param)
 	if i < 0 {
 		panic("unknown parameter: " + param)
 	}
 
-	route.conditions[i] = regexp
+	route.conditions[i] = func(value string) bool {
+		return regex.MatchString(value)
+	}
+	return route
+}
+
+// WhereFunc sets a function for validating a named parameter.
+func (route *Route) WhereFunc(param string, matchFunc func(value string) bool) *Route {
+	i := route.paramNames.IndexOf(param)
+	if i < 0 {
+		panic("unknown parameter: " + param)
+	}
+
+	route.conditions[i] = matchFunc
 	return route
 }
 
@@ -66,9 +79,9 @@ func (route *Route) Url(params ...interface{}) (string, error) {
 	for i, v := range params {
 		s := fmt.Sprint(v)
 
-		if (route.conditions[i] != nil) && !route.conditions[i].MatchString(s) {
-			err := fmt.Errorf("%w: %s not match %s",
-				ErrInvalidParameter, strconv.Quote(s), route.conditions[i],
+		if (route.conditions[i] != nil) && !route.conditions[i](s) {
+			err := fmt.Errorf("%w: %s not match the conditions",
+				ErrInvalidParameter, strconv.Quote(s),
 			)
 			return "", err
 		}

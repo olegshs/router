@@ -1,12 +1,10 @@
 package router
 
 import (
-	"regexp"
-
 	"github.com/julienschmidt/httprouter"
 )
 
-type conditions map[int]*regexp.Regexp
+type conditions map[int]func(value string) bool
 
 func (c conditions) clone() conditions {
 	clone := make(conditions, len(c))
@@ -17,9 +15,9 @@ func (c conditions) clone() conditions {
 }
 
 func (c conditions) match(params httprouter.Params) bool {
-	for k, r := range c {
+	for k, fn := range c {
 		v := params[k].Value
-		if !r.MatchString(v) {
+		if !fn(v) {
 			return false
 		}
 	}

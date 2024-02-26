@@ -82,7 +82,19 @@ func (router *Router) Where(param string, regexp *regexp.Regexp) {
 		panic("unknown parameter: " + param)
 	}
 
-	router.conditions[i] = regexp
+	router.conditions[i] = func(value string) bool {
+		return regexp.MatchString(value)
+	}
+}
+
+// WhereFunc sets a function for validating the named parameter specified in a prefix.
+func (router *Router) WhereFunc(param string, matchFunc func(value string) bool) {
+	i := router.prefix.paramNames().IndexOf(param)
+	if i < 0 {
+		panic("unknown parameter: " + param)
+	}
+
+	router.conditions[i] = matchFunc
 }
 
 // Get creates and returns a route for handling GET requests.
