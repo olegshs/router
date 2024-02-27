@@ -77,14 +77,9 @@ func (router *Router) Use(middleware ...MiddlewareFunc) {
 
 // Where sets a regular expression for validating the named parameter specified in a prefix.
 func (router *Router) Where(param string, regexp *regexp.Regexp) {
-	i := router.prefix.paramNames().IndexOf(param)
-	if i < 0 {
-		panic("unknown parameter: " + param)
-	}
-
-	router.conditions[i] = func(v string) bool {
+	router.WhereFunc(param, func(v string) bool {
 		return regexp.MatchString(v)
-	}
+	})
 }
 
 // WhereFunc sets a function for validating the named parameter specified in a prefix.

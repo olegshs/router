@@ -30,15 +30,9 @@ func (route *Route) Name(name string) *Route {
 
 // Where sets a regular expression for validating a named parameter.
 func (route *Route) Where(param string, regex *regexp.Regexp) *Route {
-	i := route.paramNames.IndexOf(param)
-	if i < 0 {
-		panic("unknown parameter: " + param)
-	}
-
-	route.conditions[i] = func(v string) bool {
+	return route.WhereFunc(param, func(v string) bool {
 		return regex.MatchString(v)
-	}
-	return route
+	})
 }
 
 // WhereFunc sets a function for validating a named parameter.
