@@ -327,8 +327,8 @@ func TestRouter_Prefix(t *testing.T) {
 		})
 
 		r.Prefix("/{userId}", func(r *Router) {
-			r.WhereFunc("userId", func(value string) bool {
-				_, err := strconv.Atoi(value)
+			r.WhereFunc("userId", func(v string) bool {
+				_, err := strconv.Atoi(v)
 				return err == nil
 			})
 
@@ -394,8 +394,8 @@ func TestRouter_Url(t *testing.T) {
 	r := New()
 
 	r.Prefix("/users/{userId}", func(r *Router) {
-		r.WhereFunc("userId", func(value string) bool {
-			_, err := strconv.Atoi(value)
+		r.WhereFunc("userId", func(v string) bool {
+			_, err := strconv.Atoi(v)
 			return err == nil
 		})
 

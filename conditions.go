@@ -4,7 +4,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-type conditions map[int]func(value string) bool
+type conditions map[int]func(string) bool
 
 func (c conditions) clone() conditions {
 	clone := make(conditions, len(c))
